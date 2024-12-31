@@ -1,6 +1,6 @@
 MAX: 42b
-DU:  21b
-Potřeba pro projekt: 21b
+DU:  21.5b
+Potřeba pro projekt: 20.5b
 
 - 1b: Describe the subject area and write the functional requirements for the project
 - 2b: Describe each project block, select an appropriate system, and justify your choice
