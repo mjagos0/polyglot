@@ -1,4 +1,8 @@
 keyring
-psycopg2
+psycopg2-binary
 redis
-Flash
+pymongo
+cassandra-driver
+flask
+requests
+pytest

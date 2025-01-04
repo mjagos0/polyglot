@@ -1,3 +1,44 @@
+Todo:
+- Decorators to check health on _methods and update self.service_health
+
+Publish:
+- Readme.md
+- Publish to github
+
+Backlog:
+- Hash user passwords
+- Filter logs based on multiple criteria
+- Add psql price service + pass price to mongodb statements
+- Decrease stock when purchase is made
+
+Docker setup:
+sudo service docker start
+
+docker compose up -d
+
+docker exec -it postgres psql -U admin -d mydb
+docker exec -it redis redis-cli
+docker exec -it neo4j cypher-shell -u neo4j -p password
+docker exec -it mongodb mongosh
+docker exec -it cassandra cqlsh
+
+docker compose down
+
+
+# # Redis
+# docker exec -i redis redis-cli FLUSHALL > /dev/null 2>&1
+
+# # MongoDB
+# docker exec -i mongodb mongosh <<EOF > /dev/null 2>&1
+# use polyglot;
+# db.statements.deleteMany({})
+# EOF
+
+# # Cassandra
+# docker exec -i cassandra cqlsh -e "TRUNCATE polyglot_logs.logs;" > /dev/null 2>&1
+
+
+Point distribution:
 MAX: 42b
 DU:  21.5b
 Potřeba pro projekt: 20.5b
