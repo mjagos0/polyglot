@@ -3,13 +3,6 @@
 ## Overview
 The **Polyglot Project** is an application designed to demonstrate polyglot persistence by utilizing multiple database systems for different tasks. The system is built to handle the operations of an **online store specializing in used and refurbished laptops**.
 
-## Subject Area
-The application supports an online store that sells:
-- **Used Laptops**
-- **Refurbished Laptops**
-
-Refurbished laptops may be upgraded or repurposed using components from multiple laptops and are sold under unique SKU numbers with a short warranty.
-
 ## Functional Requirements
 The application provides the following core functionalities:
 - Product browsing and filtering
@@ -158,103 +151,7 @@ read_log(7)
       "timestamp":"Fri, 03 Jan 2025 23:48:15 GMT",
       "userId":7
    },
-   {
-      "action":"Read Cart",
-      "parameters":"None",
-      "tags":[
-         "REDIS"
-      ],
-      "timestamp":"Fri, 03 Jan 2025 23:48:06 GMT",
-      "userId":7
-   },
-   {
-      "action":"Login Success",
-      "parameters":{
-         "cart":"ea0215ad-423c-432a-bc06-223c14321d09",
-         "session":"d647f36d-5a21-47c8-bd89-1f625e27232d",
-         "user":"testuser1"
-      },
-      "tags":[
-         "PSQL"
-      ],
-      "timestamp":"Fri, 03 Jan 2025 23:48:03 GMT",
-      "userId":7
-   },
-   {
-      "action":"logout",
-      "parameters":"None",
-      "tags":[
-         "PSQL"
-      ],
-      "timestamp":"Fri, 03 Jan 2025 23:48:00 GMT",
-      "userId":7
-   },
-   {
-      "action":"Update Cart",
-      "parameters":{
-         "product_id":"5",
-         "quantity":"2"
-      },
-      "tags":[
-         "REDIS"
-      ],
-      "timestamp":"Fri, 03 Jan 2025 23:47:58 GMT",
-      "userId":7
-   },
-   {
-      "action":"Read Statement Success",
-      "parameters":{
-         "statement_id":"1"
-      },
-      "tags":[
-         "MONGODB"
-      ],
-      "timestamp":"Fri, 03 Jan 2025 23:47:53 GMT",
-      "userId":7
-   },
-   {
-      "action":"Get Statements",
-      "parameters":"None",
-      "tags":[
-         "MONGODB"
-      ],
-      "timestamp":"Fri, 03 Jan 2025 23:47:53 GMT",
-      "userId":7
-   },
-   {
-      "action":"Read Statement",
-      "parameters":{
-         "statement_id":"1"
-      },
-      "tags":[
-         "MONGODB"
-      ],
-      "timestamp":"Fri, 03 Jan 2025 23:47:53 GMT",
-      "userId":7
-   },
-   {
-      "action":"Purchase",
-      "parameters":{
-         "cart_contents":"{'5': 1}"
-      },
-      "tags":[
-         "REDIS"
-      ],
-      "timestamp":"Fri, 03 Jan 2025 23:47:50 GMT",
-      "userId":7
-   },
-   {
-      "action":"Update Cart",
-      "parameters":{
-         "product_id":"5",
-         "quantity":"1"
-      },
-      "tags":[
-         "REDIS"
-      ],
-      "timestamp":"Fri, 03 Jan 2025 23:47:47 GMT",
-      "userId":7
-   }
+   ...
 ]
 ```
 
