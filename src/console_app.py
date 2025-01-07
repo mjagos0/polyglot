@@ -522,7 +522,7 @@ class ConsoleApp:
             return "No active session"
         
         self._create_log(self.active_user_id, "Getting recommendations", {}, ["NEO4J"])
-        self._recommend(self.active_user_id)
+        return self._recommend(self.active_user_id)
 
 
 app = ConsoleApp()

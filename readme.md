@@ -157,8 +157,8 @@ read_log(7)
 ]
 follow(7)
 > True
-# get_recommendation()
-# > ... Laptops that followed users have purchased recently ...
+get_recommendation()
+> [1] # Laptops that followed users have purchased recently
 ```
 
 ## License
