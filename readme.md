@@ -74,6 +74,8 @@ An interactive Python console session is available for user interaction. Example
 - `get_statements`
 - `read_statement`
 - `read_log`
+- `follow`
+- `get_recommendations`
 
 ### Example Interaction
 ```python
@@ -153,6 +155,10 @@ read_log(7)
    },
    ...
 ]
+follow(7)
+> True
+# get_recommendation()
+# > ... Laptops that followed users have purchased recently ...
 ```
 
 ## License

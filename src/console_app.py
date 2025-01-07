@@ -6,7 +6,8 @@ ENDPOINTS = {
     'PSQL': 'http://127.0.0.1:5001',
     'REDIS': 'http://127.0.0.1:5002',
     'MONGODB': 'http://127.0.0.1:5003',
-    'CASSANDRA': 'http://127.0.0.1:5004'
+    'CASSANDRA': 'http://127.0.0.1:5004',
+    'NEO4J': 'http://127.0.0.1:5005'
 }
 
 SERVICES = {
@@ -40,6 +41,12 @@ SERVICES = {
         'CheckHealth': ENDPOINTS['CASSANDRA'] + '/',
         'LogCreate': ENDPOINTS['CASSANDRA'] + '/log/create',
         'LogRead': ENDPOINTS['CASSANDRA'] + '/log/read'
+    },
+    'NEO4J': {
+        'CheckHealth': ENDPOINTS['NEO4J'] + '/',
+        'FollowUser': ENDPOINTS['NEO4J'] + '/user/follow',
+        'Purchase': ENDPOINTS['NEO4J'] + '/user/purchase',
+        'Recommend': ENDPOINTS['NEO4J'] + '/user/recommend'
     }
 }
 
@@ -54,55 +61,12 @@ class ConsoleApp:
         self._check_health()
     
     # Service
-    def psql_service(method):
-        @wraps(method)
-        def wrapper(self, *args, **kwargs):
-            self.psql_health = self._check_service_health("PSQL")
-            if (not self.psql_health):
-                logging.error("Cannot execute method, PSQL service is down")
-                return
-
-            return method(self, *args, **kwargs)
-        return wrapper
-    
-    def redis_service(method):
-        @wraps(method)
-        def wrapper(self, *args, **kwargs):
-            self.redis_health = self._check_service_health("REDIS")
-            if (not self.redis_health):
-                logging.error("Cannot execute method, REDIS service is down")
-                return
-
-            return method(self, *args, **kwargs)
-        return wrapper
-    
-    def mongodb_service(method):
-        @wraps(method)
-        def wrapper(self, *args, **kwargs):
-            self.mongodb_health = self._check_service_health("MONGODB")
-            if (not self.mongodb_health):
-                logging.error("Cannot execute method, MONGODB service is down")
-                return
-
-            return method(self, *args, **kwargs)
-        return wrapper
-    
-    def cassandra_service(method):
-        @wraps(method)
-        def wrapper(self, *args, **kwargs):
-            self.cassandra_health = self._check_service_health("CASSANDRA")
-            if (not self.cassandra_health):
-                logging.error("Cannot execute method, CASSANDRA service is down")
-                return
-
-            return method(self, *args, **kwargs)
-        return wrapper
-
     def _check_health(self):
         self.psql_health = self._check_service_health('PSQL')
         self.redis_health = self._check_service_health('REDIS')
         self.mongodb_health = self._check_service_health('MONGODB')
         self.cassandra_health = self._check_service_health('CASSANDRA')
+        self.neo4j_health = self._check_service_health('NEO4J')
 
         if not self.psql_health:
             logging.warning("Products & Logins are unavailable, PSQL service is down")
@@ -115,6 +79,9 @@ class ConsoleApp:
 
         if not self.cassandra_health:
             logging.warning("Logs are unavailable, CASSANDRA service is down")
+
+        if not self.neo4j_health:
+            logging.warning("Recommendations are unavailable, NEO4J service is down")
 
     def _check_service_health(self, endpoint: str) -> bool:
         try:
@@ -354,6 +321,39 @@ class ConsoleApp:
         resp.raise_for_status()
         return resp.json()['data']
     
+    # Recommendatations
+    def _follow_user(self, user_id_from: int, user_id_to: int):
+        resp = requests.post(
+            self._service('NEO4J', 'FollowUser'),
+            json={
+                'user_id_from': user_id_from,
+                'user_id_to': user_id_to
+            }
+        )
+        resp.raise_for_status()
+        return resp.json()['data']
+    
+    def _purchase(self, user_id: int, product_id: int):
+        resp = requests.post(
+            self._service('NEO4J', 'Purchase'),
+            json={
+                'user_id': user_id,
+                'product_id': product_id
+            }
+        )
+        resp.raise_for_status()
+        return resp.json()['data']
+    
+    def _recommend(self, user_id: int):
+        resp = requests.get(
+            self._service('NEO4J', 'Recommend'),
+            params={
+                'user_id': user_id
+            }
+        )
+        resp.raise_for_status()
+        return resp.json()['data']
+    
     # User
     def fetch_products(self, filter: dict = None) -> dict:
         if not self.psql_health:
@@ -434,6 +434,9 @@ class ConsoleApp:
         cart_contents = self._cart_read(self.active_user_id)
         if (len(cart_contents.keys()) == 0):
             return "Cart is empty"
+        
+        for i in cart_contents.keys():
+            self._purchase(self.active_user_id, i)
 
         statement_id = self._create_statement(self.active_user_id, cart_contents)
         self._drop_cart(self.active_user_id)
@@ -500,6 +503,26 @@ class ConsoleApp:
         
         self._create_log(self.active_user_id, "Read Logs", {'filter': {'user_name': user_id}}, ["MONGODB"])
         return self._read_log(user_id, limit)
+    
+    def follow(self, user_id):
+        if not self.neo4j_health:
+            raise RuntimeError("Cannot follow user, NEO4J service is down")
+        
+        if self.active_session is None:
+            return "No active session"
+        
+        self._create_log(self.active_user_id, "Follow User", {'filter': {'user_id': user_id}}, ["NEO4J"])
+        return self._follow_user(self.active_user_id, user_id)
+    
+    def get_recommendation(self):
+        if not self.neo4j_health:
+            raise RuntimeError("Cannot follow user, NEO4J service is down")
+        
+        if self.active_session is None:
+            return "No active session"
+        
+        self._create_log(self.active_user_id, "Getting recommendations", {}, ["NEO4J"])
+        self._recommend(self.active_user_id)
 
 
 app = ConsoleApp()
@@ -513,3 +536,5 @@ purchase = app.purchase
 get_statements = app.get_statements
 read_statement = app.read_statement
 read_log = app.read_log
+follow = app.follow
+get_recommendation = app.get_recommendation

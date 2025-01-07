@@ -31,15 +31,20 @@ cleanup() {
         kill "$CASSANDRA_PID" 2>/dev/null && wait "$CASSANDRA_PID" 2>/dev/null
     fi
 
+    if [[ -n "$NEO4J_PID" ]]; then
+        echo "Stopping Neo4j Flask service (PID: $NEO4J_PID)..."
+        kill "$NEO4J_PID" 2>/dev/null && wait "$NEO4J_PID" 2>/dev/null
+    fi
+
     echo "Application stopped."
 }
 
 trap cleanup SIGINT SIGTERM
 
 echo "Starting Docker..."
-if !systemctl is-active --quiet docker; then
-    sudo service docker start
-fi
+# if !systemctl is-active --quiet docker; then
+#     sudo service docker start
+# fi
 
 docker compose up -d
 echo "Waiting for Cassandra to become available..."
@@ -66,6 +71,10 @@ MONGODB_PID=$!
 echo "Starting Cassandra Flask service..."
 python src/cassandra_service/cassandra_service.py &
 CASSANDRA_PID=$!
+
+echo "Starting Neo4j Flask service..."
+python src/neo4j_service/neo4j_service.py &
+NEO4J_PID=$!
 
 sleep 3
 echo "Starting Console Application..."
