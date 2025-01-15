@@ -3,6 +3,7 @@
 cleanup() {
     echo "Stopping application..."
 
+    echo "Stopping docker..."
     docker compose down
 
     # Kill the background jobs started in this script
@@ -41,10 +42,11 @@ cleanup() {
 
 trap cleanup SIGINT SIGTERM
 
-echo "Starting Docker..."
-# if !systemctl is-active --quiet docker; then
-#     sudo service docker start
-# fi
+if ! sudo service docker status > /dev/null 2>&1; then
+    echo "Starting Docker..."
+    sudo service docker start
+    sleep 3
+fi
 
 docker compose up -d
 echo "Waiting for Cassandra to become available..."

@@ -33,6 +33,18 @@ Different databases are used for specific tasks to optimize performance and scal
 - Microservices expose API routes for database-specific operations.
 - The main application interacts with microservices via HTTP requests.
 
+## Prerequisites
+1. [Docker](https://docs.docker.com/get-docker/):
+   ```bash
+   docker --version
+   ```
+
+2. Supported Python version:
+   ```
+   python --version
+   pip --version
+   ```
+
 ## Installation
 1. Clone the repository:
    ```bash
@@ -50,7 +62,7 @@ Different databases are used for specific tasks to optimize performance and scal
    ```
 4. Run the application:
    ```bash
-   ./run_app.sh
+   source run_app.sh
    ```
 
 ## Testing
