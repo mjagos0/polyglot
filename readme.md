@@ -49,7 +49,7 @@ Different databases are used for specific tasks to optimize performance and scal
 1. Clone the repository:
    ```bash
    git clone https://github.com/mjagos0/polyglot_project.git
-   cd polyglot-project
+   cd polyglot_project
    ```
 2. Create a Python virtual environment:
    ```bash
